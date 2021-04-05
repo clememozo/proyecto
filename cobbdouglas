@@ -1,0 +1,48 @@
+import sys
+
+def inv(A):    #Función para la inversa de una matriz 2x2
+    det=(A[0][0])(A[1][1])-(A[0][1])(A[1][0])
+    B=[[(A[1][1])/det,((-1)(A[0][1]))/det],[((-1)(A[1][0]))/det,(A[0][0])/det]]
+    return B
+def mult(A,B): #Función para multiplicar una matriz 2x2 por una 2x1
+    C=[(A[0][0])(B[0][0])+(A[0][1])(B[1][0]),(A[1][0])(B[0][0])+(A[1][1])(B[1][0])]
+    return C
+
+def newton(L,K):
+    PQ=[77*(L*(1/2))*K-770,78(L*(3/10))(K**(4/5))-376]
+    n=0 #Contador de iteraciones
+    z=0 #Si z!=0, sucedió un error
+    while abs(PQ[0])>=(0.000001) and abs(PQ[1])>=(0.000001): #Condición para detener el ciclo
+        try:
+            n+=1
+            B=[[-(77*(L*(1/2))*K-770)],[-(78(L*(3/10))(K**(4/5))-376)]]         #B: Matriz de -P y -Q
+            J=[[(1/2)77(L*(-(1/2))*K),         77(L**(1/2))],                   #J: Matriz de derivadas parciales
+               [(3/10)78(L*(-7/10))(K*(4/5)), 78*(L*(3/10))(4/5)(K*(-1/5))]]
+            invJ=inv(J)    #Inversa de Matriz de derivadas parciales
+            X=mult(invJ,B) #Multiplicación de J^(-1) por B, lo que resulta h1 y h2 (correcciones para la L y K de la iteración anterior)
+            h1=X[0]
+            h2=X[1]
+            L=L+h1 #h1 se le suma a la L anterior
+            K=K+h2 #h2 se le suma a la K anterior
+            PQ=[77*(L*(1/2))*K-770,78(L*(3/10))(K**(4/5))-376] #Se actualiza P Y Q con los nuevos valores de L y K
+            if n>=800: #Condición para detenerse en caso de demasiadas iteraciones
+                print("No se logró llegar a un resultado.")
+                z=1
+                break
+        except: #Código para detenerse en caso de error
+            print("No se logró llegar a un resultado.")
+            z=1
+            break
+        
+    if z==0:
+        if n==0:
+            print("No se logró llegar a un resultado.")
+        else:
+            L="{:.3f}".format(L) #Código para entregar la respuesta con 3 decimales
+            K="{:.3f}".format(K)
+            print(f"Los valores fueron encontrados después de {n} iteraciones: (L,K)=({L},{K})")
+x=0
+while x==0:
+    L=float(input("Ingrese el valor inicial de L: "))
+    K=float(input("Ingrese el valor inicial de K: "))
+    newton(L,K)
